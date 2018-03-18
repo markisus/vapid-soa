@@ -221,7 +221,19 @@ class BasicRelation : public GenScatterHierarchy<Column, Ts...> {
     quick_sort(rng, comparator, begin, greater_than_pivot_begin-1);
   }
 
-  
+
+  template <uint16_t idx>
+  void quick_sort_by_field(std::mt19937& rng,
+                           size_t begin = 0,
+                           size_t end = size_t(-1)) {
+    auto comparator = [](
+        typename Head<typename Pop<idx, TypeList<Ts...>>::type>::type a,
+        typename Head<typename Pop<idx, TypeList<Ts...>>::type>::type b) {
+      return a < b;
+    };
+    quick_sort_by_field<idx>(rng, comparator, begin, end);
+  }
+
   template <uint16_t idx>
   void quick_sort_by_field(std::mt19937& rng,
                            std::function<bool(
@@ -234,7 +246,7 @@ class BasicRelation : public GenScatterHierarchy<Column, Ts...> {
         const std::tuple<Ts...>& a, const std::tuple<Ts...>& b) {
       return comparator(std::get<idx>(a), std::get<idx>(b));
     };
-    quick_sort(rng, comparator, begin, end);
+    quick_sort(rng, tuple_comparator, begin, end);
   }
 
   void dump(std::basic_ostream<char>& ss) {
@@ -255,7 +267,7 @@ class BasicRelation : public GenScatterHierarchy<Column, Ts...> {
     if (size() > MAX_NUM_ELEMENTS_TO_PRINT) {
       ss << "\t..." << std::endl;
     }
-    ss << "}";
+    ss << "}" << std::endl;
   }
 
  private:
