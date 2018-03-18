@@ -1,8 +1,5 @@
 #pragma once
 
-#include <type_traits>
-#include "NoneType.h"
-
 namespace vapid_db {
 
 template <typename... Ts> class TypeList {};
