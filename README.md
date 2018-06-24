@@ -1,5 +1,5 @@
 # VapidDb
-A stupid in-process relational database library
+A stupid in-process relational database library. Under the hood, it uses a structure of arrays format so that iterating a single column is fast (cache friendly). 
 
 Code Example (main.cpp)
 ------------------------
