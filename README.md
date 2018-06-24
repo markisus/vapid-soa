@@ -1,7 +1,7 @@
 # VapidDb
 A stupid in-process relational database library
 
-Code Example (main.cpp
+Code Example (main.cpp)
 ------------------------
 
 ```c++
