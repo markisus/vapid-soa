@@ -78,8 +78,8 @@ struct SwapIndicesOp {
 
 template <typename... Ts>
 class BasicRelation : public GenScatterHierarchy<Column, Ts...> {
- public:
-  static constexpr uint16_t Dimension = LengthOf<Ts...>::value;
+public:
+  static constexpr uint16_t Dimension = sizeof...(Ts);
 
   void insert(Ts... args) {
     insert_impl(args...);
@@ -299,7 +299,7 @@ class BasicRelation : public GenScatterHierarchy<Column, Ts...> {
 
   template <typename X, typename... Xs>
   void overwrite_impl(size_t idx, std::tuple<Ts...> t, TypeList<X, Xs...>) {
-    constexpr size_t fields_left = LengthOf<X, Xs...>::value;
+    constexpr size_t fields_left = sizeof...(Xs) + 1;
     constexpr size_t current_field = Dimension - fields_left;
     Tagged<Column<X>, TypeList<Column<Xs>...>>& column = (*this);
     column.data[idx] = std::get<current_field>(t);
@@ -318,7 +318,7 @@ class BasicRelation : public GenScatterHierarchy<Column, Ts...> {
 
   void fill_tuple(std::tuple<Ts...>* tuple,
                   size_t idx,
-                  std::integral_constant<uint16_t, LengthOf<Ts...>::value>) {
+                  std::integral_constant<uint16_t, sizeof...(Ts)>) {
     // no-op, end recursion
   }
 };

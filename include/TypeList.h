@@ -28,17 +28,4 @@ struct Pop<0, T> {
   using type = T;
 };
 
-template <typename... Ts>
-struct LengthOf;
-
-template <>
-struct LengthOf<> {
-  static constexpr uint16_t value = 0;
-};
-
-template <typename T, typename... Ts>
-struct LengthOf<T, Ts...> {
-  static constexpr uint16_t value = LengthOf<Ts...>::value + 1;
-};
-
 }
