@@ -24,29 +24,29 @@ int main(int argc, char *argv[])
 
     std::cout << "Overwriting first entry:" << std::endl;
     mySoa.overwrite(0, std::make_tuple(4.099, "fudge", 1));
-    mySoa.dump(std::cout);
+    std::cout << mySoa << std::endl;
 
     std::cout << "Resizing:" << std::endl;
     mySoa.resize(mySoa.size()-1);
-    mySoa.dump(std::cout);
+    std::cout << mySoa << std::endl;
 
     std::random_device rd;     // only used once to initialise (seed) engine
     std::mt19937 rng(rd());
 
     std::cout << "Sorting:" << std::endl;
     mySoa.quick_sort(rng);
-    mySoa.dump(std::cout);
-
+    std::cout << mySoa << std::endl;
+    
     std::cout << "Sorting by field:" << std::endl;
     mySoa.quick_sort_by_field<1>(rng);
-    mySoa.dump(std::cout);
+    std::cout << mySoa << std::endl;
 
-    // direct access to partcular column
+    // direct access to particular column
     std::cout << "Multiplying last column by half" << std::endl;
     for (auto& d : mySoa.get_column<2>()) {
         d *= 0.5;
     }
-    mySoa.dump(std::cout);
+    std::cout << mySoa << std::endl;
     
     return 0;
 }
