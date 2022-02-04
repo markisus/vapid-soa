@@ -36,14 +36,12 @@ void dump_tuple(std::basic_ostream<char>& ss, const T& t) {
 }
 
 template <typename DataType>
-struct Column {
-  std::vector<DataType> data;
-};
+struct Column : public std::vector<DataType> {};
 
 struct ClearOp {
   template <typename ColumnT>
   static void execute(ColumnT& c) {
-    c.data.clear();
+    c.clear();
   }
 };
 
@@ -51,7 +49,7 @@ struct ResizeOp {
   ResizeOp(size_t s) : new_size(s) {};
   template <typename ColumnT>
   void execute(ColumnT& c) {
-    c.data.resize(new_size);
+    c.resize(new_size);
   }
   size_t new_size = 0;
 };
@@ -60,7 +58,7 @@ struct ReserveOp {
   ReserveOp(size_t s) : new_size(s) {};
   template <typename ColumnT>
   void execute(ColumnT& c) {
-    c.data.reserve(new_size);
+    c.reserve(new_size);
   }
   size_t new_size = 0;
 };
@@ -70,7 +68,7 @@ struct SwapIndicesOp {
       index_a(a), index_b(b) {};
   template <typename ColumnT>
   void execute(ColumnT& c) {
-    std::swap(c.data[index_a], c.data[index_b]);
+    std::swap(c[index_a], c[index_b]);
   }
   size_t index_a = 0;
   size_t index_b = 0;
@@ -89,14 +87,14 @@ public:
     using first_column_type = Column<typename Head<TypeList<Ts...>>::type>;
     using tail_type = typename Tail<TypeList<Column<Ts>...>>::type;
     Tagged<first_column_type, tail_type>& tagged_column = *this;
-    return tagged_column.data.size();
+    return tagged_column.size();
   }
 
   bool empty() {
     using first_column_type = Column<typename Head<TypeList<Ts...>>::type>;
     using tail_type = typename Tail<TypeList<Column<Ts>...>>::type;
     Tagged<first_column_type, tail_type>& tagged_column = *this;
-    return tagged_column.data.empty();
+    return tagged_column.empty();
   }
 
   void clear() {
@@ -226,9 +224,11 @@ public:
   void quick_sort_by_field(std::mt19937& rng,
                            size_t begin = 0,
                            size_t end = size_t(-1)) {
+
+    using field_type = typename NthType<idx, TypeList<Ts...>>::type;
     auto comparator = [](
-        typename Head<typename Pop<idx, TypeList<Ts...>>::type>::type a,
-        typename Head<typename Pop<idx, TypeList<Ts...>>::type>::type b) {
+        field_type a,
+        field_type b) {
       return a < b;
     };
     quick_sort_by_field<idx>(rng, comparator, begin, end);
@@ -237,8 +237,8 @@ public:
   template <uint16_t idx>
   void quick_sort_by_field(std::mt19937& rng,
                            std::function<bool(
-                               typename Head<typename Pop<idx, TypeList<Ts...>>::type>::type,
-                               typename Head<typename Pop<idx, TypeList<Ts...>>::type>::type)>
+                               typename NthType<idx, TypeList<Ts...>>::type,
+                               typename NthType<idx, TypeList<Ts...>>::type)>
                            comparator,
                            size_t begin = 0,
                            size_t end = size_t(-1)) {
@@ -288,7 +288,7 @@ public:
   void insert_impl(X x, Xs... xs) {
     Tagged<Column<X>, TypeList<Column<Xs>...>>& tagged_column = *this;
     Column<X>& column = tagged_column;
-    column.data.push_back(x);
+    column.push_back(x);
 
     insert_impl(xs...);
   }
@@ -302,7 +302,7 @@ public:
     constexpr size_t fields_left = sizeof...(Xs) + 1;
     constexpr size_t current_field = Dimension - fields_left;
     Tagged<Column<X>, TypeList<Column<Xs>...>>& column = (*this);
-    column.data[idx] = std::get<current_field>(t);
+    column[idx] = std::get<current_field>(t);
     overwrite_impl(idx, t, TypeList<Xs...>{});
   }
 
@@ -312,7 +312,7 @@ public:
 
   template <uint16_t field_idx>
   void fill_tuple(std::tuple<Ts...>* tuple, size_t idx, std::integral_constant<uint16_t, field_idx>) {
-    std::get<field_idx>(*tuple) = FieldAt<field_idx>(*this).data[idx];
+    std::get<field_idx>(*tuple) = FieldAt<field_idx>(*this)[idx];
     fill_tuple(tuple, idx, std::integral_constant<uint16_t, field_idx+1>{});
   }
 

@@ -33,4 +33,14 @@ struct Pop<0, T> {
   using type = T;
 };
 
+// Get the nth type in a TypeList
+// Examples:
+//   NthType<0, TypeList<A, B, C>>::type = A
+//   NthType<1, TypeList<A, B, C>>::type = B
+//   NthType<2, TypeList<A, B, C>>::type = C
+template <uint16_t idx, typename T>
+struct NthType {
+    using type = typename Head<typename Pop<idx, T>::type>::type;
+};
+
 }
