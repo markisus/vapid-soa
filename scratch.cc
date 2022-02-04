@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
     // direct access to partcular column
     std::cout << "Multiplying last column by half" << std::endl;
     for (auto& d : mySoa.get_column<2>()) {
-        std::cout << "\t" << d << "\n";
         d *= 0.5;
     }
     mySoa.dump(std::cout);

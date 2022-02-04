@@ -35,7 +35,7 @@ struct TaggedFieldAt<idx, TypeList<T, Ts...>> :
 
 
 template <uint16_t idx, typename T>
-typename TaggedFieldAt<idx, typename T::type_list>::type& FieldAt(T& t) {
+const typename TaggedFieldAt<idx, typename T::type_list>::type& FieldAt(const T& t) {
   return t;
 };
 

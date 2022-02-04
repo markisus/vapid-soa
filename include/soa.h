@@ -80,26 +80,28 @@ public:
   static constexpr uint16_t Dimension = sizeof...(Ts);
 
   template <int col_idx>
-  auto& get_column() {
+  const auto& get_column() const {
       return FieldAt<col_idx>(*this);
+  }
+
+  template <int col_idx>
+  auto& get_column() {
+      const soa<Ts...>* const_this = this;
+      using col_type = Column<typename NthType<col_idx, TypeList<Ts...>>::type>;
+      const col_type& const_col = const_this->get_column<col_idx>();
+      return const_cast<col_type&>(const_col);
   }
 
   void insert(Ts... args) {
     insert_impl(args...);
   }
 
-  size_t size() {
-    using first_column_type = Column<typename Head<TypeList<Ts...>>::type>;
-    using tail_type = typename Tail<TypeList<Column<Ts>...>>::type;
-    Tagged<first_column_type, tail_type>& tagged_column = *this;
-    return tagged_column.size();
+  size_t size() const {
+      return get_column<0>().size();
   }
 
   bool empty() {
-    using first_column_type = Column<typename Head<TypeList<Ts...>>::type>;
-    using tail_type = typename Tail<TypeList<Column<Ts>...>>::type;
-    Tagged<first_column_type, tail_type>& tagged_column = *this;
-    return tagged_column.empty();
+      return get_column<0>().size();
   }
 
   void clear() {
@@ -162,7 +164,7 @@ public:
     return write_head;
   }
 
-  std::tuple<Ts...> as_tuple(size_t idx) {
+  std::tuple<Ts...> as_tuple(size_t idx) const {
     std::tuple<Ts...> result;
     fill_tuple(&result, idx, std::integral_constant<uint16_t, 0>{});
     return result;
@@ -254,7 +256,7 @@ public:
     quick_sort(rng, tuple_comparator, begin, end);
   }
 
-  void dump(std::basic_ostream<char>& ss) {
+  void dump(std::basic_ostream<char>& ss) const {
     constexpr size_t MAX_NUM_ELEMENTS_TO_PRINT = 25;
     size_t num_elements_to_print = size();
     bool too_many_elements = false;
@@ -316,14 +318,14 @@ public:
   }
 
   template <uint16_t field_idx>
-  void fill_tuple(std::tuple<Ts...>* tuple, size_t idx, std::integral_constant<uint16_t, field_idx>) {
+  void fill_tuple(std::tuple<Ts...>* tuple, size_t idx, std::integral_constant<uint16_t, field_idx>) const {
     std::get<field_idx>(*tuple) = get_column<field_idx>()[idx];
     fill_tuple(tuple, idx, std::integral_constant<uint16_t, field_idx+1>{});
   }
 
   void fill_tuple(std::tuple<Ts...>* tuple,
                   size_t idx,
-                  std::integral_constant<uint16_t, sizeof...(Ts)>) {
+                  std::integral_constant<uint16_t, sizeof...(Ts)>) const {
     // no-op, end recursion
   }
 };
