@@ -65,7 +65,9 @@ int main(int argc, char *argv[])
 
 Installation
 -----------
-**Manual** Copy the vapid folder into your project and #include "vapid/soa.h"  
+**Manual**  
+Copy the vapid folder into your project and #include "vapid/soa.h"  
+  
 **Bazel**
 ```starlark
 # WORKSPACE
