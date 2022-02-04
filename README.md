@@ -65,4 +65,6 @@ int main(int argc, char *argv[])
 
 Installation
 -----------
-Copy the include folder into your project and #include "soa.h"
+Manual: Copy the vapid folder into your project and #include "vapid/soa.h"
+
+

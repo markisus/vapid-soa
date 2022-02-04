@@ -1,5 +1,5 @@
 #include <iostream>
-#include "include/soa.h"
+#include "vapid/soa.h"
 
 int main(int argc, char *argv[])
 {
