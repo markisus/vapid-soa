@@ -4,7 +4,6 @@ These are the most useful operations.
 - `.quick_sort_by_field<field_idx>()` sort all columns in tandem based on particular column 
 - `.as_tuple(row_idx)` read data out as tuple
 - `.get_column<field_idx>()` direct access to underlying std::vector column
-- `.dump(std::cout)` pretty the printing contents 
 
 Code Example (scratch.cpp)
 ------------------------
