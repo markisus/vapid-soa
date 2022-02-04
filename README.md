@@ -1,9 +1,9 @@
 # vapid soa
 A simple header only library that implements structure of arrays data structure backed by std::vector.  
 These are the most useful operations.  
-- `.sort_by_field<field_idx>()` sort all columns in tandem based on particular column 
+- `.quick_sort_by_field<field_idx>()` sort all columns in tandem based on particular column 
 - `.as_tuple(row_idx)` read data out as tuple
-- `.get_column<field_idx>()` direct access to underlying columns
+- `.get_column<field_idx>()` direct access to underlying std::vector column
 - `.dump(std::cout)` pretty the printing contents 
 
 Code Example (main.cpp)
