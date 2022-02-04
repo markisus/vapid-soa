@@ -62,3 +62,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 ```
+
+Installation
+-----------
+Copy the include folder into your project and #include "soa.h"
