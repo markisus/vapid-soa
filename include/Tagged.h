@@ -1,7 +1,7 @@
 #ifndef _TAGGED_H_
 #define _TAGGED_H_
 
-namespace vapid_db {
+namespace vapid {
 
 // The Tagged helper allows you to glom arbitrary
 // types onto some actual type.

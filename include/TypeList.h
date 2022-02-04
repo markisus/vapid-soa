@@ -1,6 +1,6 @@
 #pragma once
 
-namespace vapid_db {
+namespace vapid {
 
 template <typename... Ts> class TypeList {};
 

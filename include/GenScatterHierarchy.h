@@ -4,7 +4,7 @@
 #include "Tagged.h"
 #include "TypeList.h"
 
-namespace vapid_db {
+namespace vapid {
 
 template <template <typename> typename Unit, typename... Ts>
 struct GenScatterHierarchy;
@@ -35,7 +35,7 @@ struct TaggedFieldAt<idx, TypeList<T, Ts...>> :
 
 
 template <uint16_t idx, typename T>
-typename TaggedFieldAt<idx, typename T::type_list>::type FieldAt(T& t) {
+typename TaggedFieldAt<idx, typename T::type_list>::type& FieldAt(T& t) {
   return t;
 };
 

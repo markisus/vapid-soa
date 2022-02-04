@@ -10,7 +10,7 @@
 
 #include "GenScatterHierarchy.h"
 
-namespace vapid_db {
+namespace vapid {
 
 template <typename Idx, typename T>
 struct TupleDumper;
@@ -75,9 +75,14 @@ struct SwapIndicesOp {
 };
 
 template <typename... Ts>
-class BasicRelation : public GenScatterHierarchy<Column, Ts...> {
+class soa : public GenScatterHierarchy<Column, Ts...> {
 public:
   static constexpr uint16_t Dimension = sizeof...(Ts);
+
+  template <int col_idx>
+  auto& get_column() {
+      return FieldAt<col_idx>(*this);
+  }
 
   void insert(Ts... args) {
     insert_impl(args...);
@@ -257,7 +262,7 @@ public:
       num_elements_to_print = MAX_NUM_ELEMENTS_TO_PRINT;
       too_many_elements = true;
     }
-    ss << "BasicRelation {\n";
+    ss << "soa {\n";
     for (size_t i = 0; i < num_elements_to_print; ++i) {
       std::tuple<Ts...> t = this->as_tuple(i);
       ss << "\t";
@@ -312,7 +317,7 @@ public:
 
   template <uint16_t field_idx>
   void fill_tuple(std::tuple<Ts...>* tuple, size_t idx, std::integral_constant<uint16_t, field_idx>) {
-    std::get<field_idx>(*tuple) = FieldAt<field_idx>(*this)[idx];
+    std::get<field_idx>(*tuple) = get_column<field_idx>()[idx];
     fill_tuple(tuple, idx, std::integral_constant<uint16_t, field_idx+1>{});
   }
 
