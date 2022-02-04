@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     mySoa.quick_sort_by_field<1>(rng);
     mySoa.dump(std::cout);
 
-    // direct access to partcular column
+    // direct access to particular column
     std::cout << "Multiplying last column by half" << std::endl;
     for (auto& d : mySoa.get_column<2>()) {
         std::cout << "\t" << d << "\n";
