@@ -1,8 +1,8 @@
 # vapid soa
 A simple header only library that implements structure of arrays data structure backed by std::vector.  
 These are the most useful operations.  
-- `.quick_sort_by_field<col_idx>()` sort all columns in tandem based on particular column 
-- `.as_tuple(row_idx)` read data out as tuple
+- `.sort_by_field<col_idx>()` sort all columns in tandem based on particular column 
+- `operator[row_idx]` read data out as tuple of references
 - `.get_column<col_idx>()` direct access to underlying std::vector column
 
 Code Example (scratch.cpp)
@@ -14,53 +14,62 @@ Code Example (scratch.cpp)
 
 int main(int argc, char *argv[])
 {
-    vapid::soa<double, std::string, int> mySoa;
+    // presidents will be a soa representing
+    // order, first name, last name
+    vapid::soa<int, std::string, std::string> presidents;
 
-    std::cout << "Insertion:" << std::endl;
-    mySoa.insert(5.02, "helloooo", 3);
-    mySoa.insert(6.23, "gobye", 2);
-    mySoa.insert(3.14, "godbye", 1000);
-    mySoa.insert(444.14, "eh", 1000);
-    mySoa.insert(5.04, "hellooo", 3);
-    mySoa.insert(6.25, "goodby", 2);
-    mySoa.insert(3.18, "godye", 1000);
-    mySoa.insert(444.19, "ehh", 1000);
-    mySoa.insert(-2.134, "h", 1000);
-    mySoa.dump(std::cout);
+    presidents.insert(0, "Abraham", "Lincoln");
+    presidents.insert(3, "Barack", "Obama");
+    presidents.insert(2, "George", "Bush");
+    presidents.insert(1, "Bill", "Clinton");
+    presidents.insert(4, "Donald", "Trump");
+    presidents.insert(5, "Joe", "Biden");
 
-    std::cout << "Accessing a particular entry as tuple:" << std::endl;
-    std::tuple<double, std::string, int> entry0 = mySoa.as_tuple(0);
-    std::cout << "\t" << std::get<0>(entry0) << ", " << std::get<1>(entry0) << ", " << std::get<2>(entry0) << "\n";
+    std::cout << "Presidents in order of insertion" << "\n";
+    std::cout << presidents << "\n";
 
+    // sort by time (first column)
+    presidents.sort_by_field<0>();
+    std::cout << "Presidents sorted by temporal order" << "\n";
+    std::cout << presidents << "\n";
 
-    std::cout << "Overwriting first entry:" << std::endl;
-    mySoa.overwrite(0, std::make_tuple(4.099, "fudge", 1));
-    std::cout << mySoa << std::endl;
+    // sort by first name (second column)
+    presidents.sort_by_field<1>();
+    std::cout << "Presidents sorted by first name" << "\n";
+    std::cout << presidents << "\n";
 
-    std::cout << "Resizing:" << std::endl;
-    mySoa.resize(mySoa.size()-1);
-    std::cout << mySoa << std::endl;
+    // sort by last name (third column)
+    presidents.sort_by_field<2>();
+    std::cout << "Presidents sorted by last name" << "\n";
+    std::cout << presidents << "\n";
 
-    std::random_device rd;     // only used once to initialise (seed) engine
-    std::mt19937 rng(rd());
+    // operator[] returns a tuple of references
+    // Let's update Joe Biden to Joseph Biden
+    auto [order, fname, lname] = presidents[0];
+    fname = "Joseph"; // Joe => Joseph
+    std::cout << "Editing the first row to update Joe=>Joseph" << "\n";
+    std::cout << presidents << "\n";
 
-    std::cout << "Sorting:" << std::endl;
-    mySoa.quick_sort(rng);
-    std::cout << mySoa << std::endl;
-    
-    std::cout << "Sorting by field:" << std::endl;
-    mySoa.quick_sort_by_field<1>(rng);
-    std::cout << mySoa << std::endl;
+    // get_column<idx> returns direct access
+    // to the underlying std::vector.
+    // Let's update the first name column, changing
+    // the entry George to George W.
+    std::cout << "Editing the second row to update George=>George W." << "\n";
+    auto& first_names = presidents.get_column<1>();
+    first_names[1] = "George W.";
+    std::cout << presidents << "\n";
 
-    // direct access to particular column
-    std::cout << "Multiplying last column by half" << std::endl;
-    for (auto& d : mySoa.get_column<2>()) {
-        d *= 0.5;
-    }
-    std::cout << mySoa << std::endl;
-    
+    // We can pass a custom comparator when sorting
+    // Let's sort based on length of last name
+    std::cout << "Sorting by number of characters in the last name." << "\n";
+    presidents.sort_by_field<2>([](auto& lname_a, auto& lname_b){ 
+        return lname_a.size() < lname_b.size();
+    });
+    std::cout << presidents << "\n";
+
     return 0;
 }
+
 ```
 
 Manual Installation
