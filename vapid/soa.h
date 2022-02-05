@@ -219,7 +219,7 @@ private:
 };
 
 template <typename... Ts>
-std::ostream& operator<<(std::ostream& cout, const vapid::soa<Ts...> soa) {
+std::ostream& operator<<(std::ostream& cout, const vapid::soa<Ts...>& soa) {
     soa.dump(cout);
     return cout;
 }
