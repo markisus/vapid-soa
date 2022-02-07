@@ -9,3 +9,9 @@ cc_binary(
     srcs = ["scratch.cc"],
     deps = [":soa"]
 )
+
+cc_binary(
+    name = "benchmark",
+    srcs = ["benchmark.cc", "tictoc.hpp"],
+    deps = [":soa"]
+)
