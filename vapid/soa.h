@@ -148,6 +148,9 @@ namespace vapid {
         }
 
         void prepare_tmp() {
+            // sorting requires the temporary buffers in data_tmp_
+            // this function pre-allocates those temporary buffers
+            // so that no allocation is done during the sort call
             return resize_impl(std::index_sequence_for<Ts...>{}, data_tmp_, size());
         }
 
