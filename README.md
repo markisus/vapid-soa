@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 
 Benchmark
 -------
-We can observe speed ups for structure of arrays vs array of structs with the toy program benchmark.cc
+We can observe speed ups for structure of arrays (vapid::soa) vs array of structs (std::vector) with the toy program benchmark.cc
 Here are the results using Visual Studio 2022 on Release mode on my laptop.
 
 ```
@@ -140,8 +140,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_github_markisus_vapid-soa",
-    url = "https://github.com/markisus/vapid-soa/archive/dc6b6d6a399b67cc1441965d9ba34642654f8ef4.zip",
-    strip_prefix = "vapid-soa-dc6b6d6a399b67cc1441965d9ba34642654f8ef4")
+    url = "https://github.com/markisus/vapid-soa/archive/d3c303a3fe15ebc4c8a7e3049bd21a3f663a42d0.zip",
+    strip_prefix = "vapid-soa-d3c303a3fe15ebc4c8a7e3049bd21a3f663a42d0")
 ```
 ```starlark
 # BUILD
