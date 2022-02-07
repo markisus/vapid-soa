@@ -101,9 +101,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_github_markisus_vapid-soa",
-    url = "https://github.com/markisus/vapid-soa/archive/9c4d431e7cc02d09ffb073960c85aa090bf5938e.zip",
-    sha256 = "4a57761c50d868cb25f9910b03ce0a2e32ac5009b019c2684c43b411663952c7",
-    strip_prefix = "vapid-soa-9c4d431e7cc02d09ffb073960c85aa090bf5938e")
+    url = "https://github.com/markisus/vapid-soa/archive/dc6b6d6a399b67cc1441965d9ba34642654f8ef4.zip",
+    strip_prefix = "vapid-soa-dc6b6d6a399b67cc1441965d9ba34642654f8ef4")
 ```
 ```starlark
 # BUILD
