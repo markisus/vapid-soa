@@ -5,7 +5,7 @@ These are the most useful operations.
 - `.sort_by_field<col_idx>()` sort all columns in tandem based on particular column 
 - `.operator()[row_idx]` read data out as tuple of references
 - `.get_column<col_idx>()` direct access to underlying std::vector column
-- `.view<col_idx1, col_idx2, ...>()` read subset of the columns out as a tuple of references
+- `.view<col_idx1, col_idx2, ...>(row_idx)` read subset of the fields out as a tuple of references
 
 Code Example (scratch.cpp)
 ------------------------
