@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 
 Benchmark
 -------
-We can observe speed ups for structure of arrays (vapid::soa) vs array of structs (std::vector) with the toy program benchmark.cc
+We can observe speed ups for structure of arrays (soa=vapid::soa) vs array of structs (vec=std::vector) with the toy program benchmark.cc.  
 Here are the results using Visual Studio 2022 on Release mode on my laptop.
 
 ```
