@@ -71,9 +71,9 @@ int main(int argc, char* argv[])
 {
     TicToc tictoc;
     double soa_sort_time = 0;
-    double soa_sum_time = 0;
+    double soa_ts_avg_time = 0;
     double vec_sort_time = 0;
-    double vec_sum_time = 0;
+    double vec_ts_avg_time = 0;
     TestCase t0 = TestCase::random();
     t0.measurements_soa.prepare_tmp();
 
@@ -89,11 +89,12 @@ int main(int argc, char* argv[])
 
         // soa sum
         tictoc.tic();
-        double soa_sum = 0;
+        double soa_ts_avg = 0;
         for (double d : t.measurements_soa.get_column<2>()) {
-            soa_sum += d;
+            soa_ts_avg += d;
         }
-        soa_sum_time += tictoc.toc();
+        soa_ts_avg /= t.measurements_soa.size();
+        soa_ts_avg_time += tictoc.toc();
 
         // vec sort
         tictoc.tic();
@@ -106,18 +107,19 @@ int main(int argc, char* argv[])
 
         // vec sum
         tictoc.tic();
-        double vec_sum = 0;
+        double vec_ts_avg = 0;
         for (const auto& meas : t.measurements_vec) {
-            vec_sum += meas.timestamp;
+            vec_ts_avg += meas.timestamp;
         }
-        vec_sum_time += tictoc.toc();
+        vec_ts_avg /= t.measurements_vec.size();
+        vec_ts_avg_time += tictoc.toc();
 
         if (argc == 1234) {
             // prevent optimization
             std::cout << t.measurements_soa.get_column<0>()[0] << "\n";
             std::cout << t.measurements_vec[0].timestamp << "\n";
-            std::cout << vec_sum << "\n";
-            std::cout << soa_sum << "\n";
+            std::cout << vec_ts_avg << "\n";
+            std::cout << soa_ts_avg << "\n";
 
         }
     }
@@ -126,8 +128,8 @@ int main(int argc, char* argv[])
     std::cout << "soa sort time " << soa_sort_time << std::endl;
     std::cout << "vec sort time " << vec_sort_time << std::endl;
 
-    std::cout << "soa sum time " << soa_sum_time << std::endl;
-    std::cout << "vec sum time " << vec_sum_time << std::endl;
+    std::cout << "soa timestamp avg time " << soa_ts_avg_time << std::endl;
+    std::cout << "vec timestamp avg time " << vec_ts_avg_time << std::endl;
          
     return 0;
 }

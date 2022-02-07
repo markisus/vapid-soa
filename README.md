@@ -89,6 +89,44 @@ int main(int argc, char *argv[])
 }
 ```
 
+Benchmark
+-------
+We can observe speed ups for structure of arrays vs array of structs with the toy program benchmark.cc
+Here are the results using Visual Studio 2022 on Release mode on my laptop.
+
+```
+benchmark results ==============
+soa sort time 0.126592
+vec sort time 0.312302
+soa timestamp avg time 0.0018725
+vec timestamp avg time 0.0052643
+```
+
+The benchmark contains a small program concerning simulated sensor measurements. With a straightforward array of structs, we store metadata together with the actual sensor data together and then just push_back() these onto an std::vector.
+```c++
+struct SensorData {
+    std::array<double, 18> xyz;
+
+struct Measurement {
+    Id sensor_id;
+    Id object_id;
+    double timestamp;
+    SensorData data;
+};
+
+...
+
+std::vector<Measurement> measurements_vec;
+measurements_vec.push_back(m);
+```
+Alternatively, we could split the metadata and sensor data apart into a structure of arrays.
+```c++
+vapid::soa<Id, Id, double, SensorData> measurements_soa;
+soa.insert(m.sensor_id, m.object_id, m.timestamp, m.data);
+```
+
+The benchmark times the cost of sorting by sensor_id, and then the cost of finding the average measurement timestamp using an std::vector vs a vapid::soa.
+
 Manual Installation
 -----------
 Copy the vapid folder into your project and #include "vapid/soa.h"  
