@@ -197,9 +197,6 @@ namespace vapid {
         void sort_col_by_reference(std::integral_constant<size_t, col_idx>) {
             auto& src = std::get<col_idx>(data_);
             auto& dst = std::get<col_idx>(data_tmp_);
-            if (src.size() != dst.size()) {
-                std::cout << "UNPREPARED" << "\n";
-            }
             dst.resize(src.size());
             for (size_t idx = 0; idx < src.size(); ++idx) {
                 dst[idx] = src[sort_order_reference_[idx]];
