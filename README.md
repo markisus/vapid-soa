@@ -1,5 +1,5 @@
 # vapid soa
-A simple header only library that implements structure of arrays data structure backed by std::vector.  
+A simple c++17 header only library that implements structure of arrays data structure backed by std::vector.  
 These are the most useful operations.  
 - `.insert(field1, field2, ...)` field_n inserts into the nth array
 - `.sort_by_field<col_idx>()` sort all columns in tandem based on particular column 
