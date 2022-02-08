@@ -89,6 +89,82 @@ int main(int argc, char *argv[])
     return 0;
 }
 ```
+This program outputs the following.
+```
+Presidents in order of insertion
+soa {
+	0, Abraham, Lincoln
+	3, Barack, Obama
+	2, George, Bush
+	1, Bill, Clinton
+	4, Donald, Trump
+	5, Joe, Biden
+}
+
+Presidents sorted by temporal order
+soa {
+	0, Abraham, Lincoln
+	1, Bill, Clinton
+	2, George, Bush
+	3, Barack, Obama
+	4, Donald, Trump
+	5, Joe, Biden
+}
+
+Presidents sorted by first name
+soa {
+	0, Abraham, Lincoln
+	3, Barack, Obama
+	1, Bill, Clinton
+	4, Donald, Trump
+	2, George, Bush
+	5, Joe, Biden
+}
+
+Presidents sorted by last name
+soa {
+	5, Joe, Biden
+	2, George, Bush
+	1, Bill, Clinton
+	0, Abraham, Lincoln
+	3, Barack, Obama
+	4, Donald, Trump
+}
+
+Editing the first row to update Joe => Joseph
+soa {
+	5, Joseph, Biden
+	2, George, Bush
+	1, Bill, Clinton
+	0, Abraham, Lincoln
+	3, Barack, Obama
+	4, Donald, Trump
+}
+
+Editing the third row to update Abraham Lincoln => George Washington
+soa {
+	5, Joseph, Biden
+	2, George, Bush
+	1, Bill, Clinton
+	0, George, Washington
+	3, Barack, Obama
+	4, Donald, Trump
+}
+
+Summing first name lengths
+Total characters used in first names = 34
+
+Sorting by number of characters in the last name.
+soa {
+	2, George, Bush
+	5, Joseph, Biden
+	3, Barack, Obama
+	4, Donald, Trump
+	1, Bill, Clinton
+	0, George, Washington
+}
+
+```
 
 Benchmark
 -------
