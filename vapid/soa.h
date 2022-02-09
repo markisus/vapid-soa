@@ -194,6 +194,10 @@ namespace vapid {
             ((sort_col_by_reference(std::integral_constant<size_t, I>{})), ...);
         }
 
+        
+        // o provides the new position for each index. For example if o[0] = 3, 
+        // it means that the values at index 0 should be moved to index 3 to be sorted.
+        // c contains the values to be reordered according to o.
         template <class C>
         void reorder(C &c, std::vector<size_t> &o)
         {
