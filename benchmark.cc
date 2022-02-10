@@ -58,7 +58,7 @@ struct TestCase {
 
     static TestCase random() {
         TestCase t;
-        for (int i = 0; i < 100000; ++i) {
+        for (int i = 0; i < 200000; ++i) {
             Measurement m = Measurement::random();
             t.measurements_vec.push_back(m);
             t.measurements_soa.insert(m.sensor_id, m.object_id, m.timestamp, m.data);
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
     TestCase t0 = TestCase::random();
     t0.measurements_soa.prepare_tmp();
 
-    int num_trials = 10;
+    int num_trials = 50;
     for (int trial = 0; trial <= num_trials; ++trial) {
         std::cout << "\rrunning trial " << trial << "/" << num_trials << std::flush;
         TestCase t = t0;
