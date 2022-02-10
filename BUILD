@@ -11,7 +11,15 @@ cc_binary(
 )
 
 cc_binary(
+    # deprecated in favor of benchmarks below
     name = "benchmark",
     srcs = ["benchmark.cc", "tictoc.hpp"],
     deps = [":soa"]
+)
+
+cc_binary(
+    name = "benchmarks",
+    srcs = ["benchmarks.cc"],
+    deps = [":soa",
+            "@com_github_google_benchmark//:benchmark_main"]
 )
