@@ -202,7 +202,7 @@ namespace vapid {
             auto& dst = std::get<col_idx>(data_tmp_);
             dst.resize(src.size());
             for (size_t idx = 0; idx < src.size(); ++idx) {
-                dst[idx] = src[sort_order_reference_[idx]];
+                dst[idx] = std::move(src[sort_order_reference_[idx]]);
             }
             std::swap(src, dst);
         }
