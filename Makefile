@@ -1,2 +1,2 @@
-all: scratch.cc
-	g++ -o scratch scratch.cc
+all: 
+	echo "Makefile deprecated: Please build with bazel"
