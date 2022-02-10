@@ -2,7 +2,6 @@
 #include <cstdint>
 #include <random>
 #include <array>
-#include <string>
 #include "vapid/soa.h"
 #include "tictoc.hpp"
 
@@ -11,14 +10,13 @@ using Id = unsigned short;
 std::default_random_engine gen;
 std::uniform_int_distribution<Id> sensor_id_gen(0, 100);
 std::uniform_int_distribution<Id> object_id_gen(0, 10);
-std::uniform_int_distribution<int> char_gen('a', 'z');
 std::uniform_real_distribution<double> real_gen(-10.0, 10.0);
 
-struct ArraySensorData {
+struct SensorData {
     std::array<double, 18> xyz;
 
-    static ArraySensorData random() {
-        ArraySensorData s;
+    static SensorData random() {
+        SensorData s;
         for (size_t i = 0; i < s.xyz.size(); ++i) {
             s.xyz[i] = real_gen(gen);
         }
@@ -26,35 +24,11 @@ struct ArraySensorData {
     };
 };
 
-struct StringSensorData {
-    std::string data;
-
-    static StringSensorData random() {
-        StringSensorData res;
-        char buff[30];
-        for (size_t i = 0; i < 30; ++i) {
-            buff[i] = char_gen(gen);
-        }       
-        res.data = buff;
-        return res;
-    };
-};
-
-
-
 template <typename... Ts>
-std::ostream& operator<<(std::ostream& cout, const ArraySensorData& s) {
+std::ostream& operator<<(std::ostream& cout, const SensorData& s) {
     cout << "{" << s.xyz[0] << ", " << s.xyz[1] << ", " << s.xyz[2] << "}";
     return cout;
 }
-
-template <typename... Ts>
-std::ostream& operator<<(std::ostream& cout, const StringSensorData& s) {
-    cout << "\"" << s.data << "\"";
-    return cout;
-}
-
-using SensorData = ArraySensorData;
 
 struct Measurement {
     Id sensor_id;
