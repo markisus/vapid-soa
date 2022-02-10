@@ -65,7 +65,6 @@ namespace vapid {
         template <typename... Xs>
         void insert(Xs... xs) {
             insert_impl(std::index_sequence_for<Ts...>{}, std::forward_as_tuple(xs...));
-            sort_order_reference_.push_back(size() - 1);
         }
 
         auto get_row(size_t row) const {
@@ -108,7 +107,14 @@ namespace vapid {
 
         template <size_t col_idx, typename C>
         void sort_by_field(C&& comparator) {
-            reset_sort_reference();
+            size_t num_elems =  size();
+            std::vector<size_t> sort_order_tmp(num_elems);
+            std::vector<size_t> sort_order_reference(num_elems);
+
+            sort_order_tmp.resize(num_elems);
+            for (size_t i = 0; i < num_elems; ++i) {
+                sort_order_tmp[i] = i;
+            }
 
             auto& col = get_column<col_idx>();
 
@@ -116,16 +122,14 @@ namespace vapid {
                 return comparator(col[a], col[b]);
             };
 
-            std::stable_sort(sort_order_reference_.begin(),
-                             sort_order_reference_.end(),
+            std::stable_sort(sort_order_tmp.begin(),
+                             sort_order_tmp.end(),
                              comparator_wrapper);
 
-            sort_order_tmp_ = sort_order_reference_;
-            size_t num_elems = sort_order_reference_.size();
             for (size_t i=0; i<num_elems; ++i)
-                sort_order_reference_[sort_order_tmp_[i]] = i;
+                sort_order_reference[sort_order_tmp[i]] = i;
 
-            sort_by_reference_impl(std::index_sequence_for<Ts...>{});
+            sort_by_reference_impl(sort_order_tmp, sort_order_reference, std::index_sequence_for<Ts...>{});
         }
 
         template <size_t col_idx>
@@ -151,6 +155,8 @@ namespace vapid {
             }
             ss << "}" << std::endl;
         }
+
+        void prepare_tmp() {}
 
     private:
         template <typename T, size_t... I>
@@ -184,14 +190,13 @@ namespace vapid {
         }
 
         void reset_sort_reference() {
-            for (size_t i = 0; i < size(); ++i) {
-                sort_order_reference_[i] = i;
-            }
         }
 
         template <size_t... I>
-        void sort_by_reference_impl(std::integer_sequence<size_t, I...>) {
-            ((sort_col_by_reference(std::integral_constant<size_t, I>{})), ...);
+        void sort_by_reference_impl(std::vector<size_t> &sort_order_tmp,
+                                    const std::vector<size_t> &sort_order_reference,
+                                    std::integer_sequence<size_t, I...>) {
+            ((sort_col_by_reference(sort_order_tmp, sort_order_reference, std::integral_constant<size_t, I>{})), ...);
         }
 
         
@@ -214,19 +219,15 @@ namespace vapid {
         }
 
         template <size_t col_idx>
-        void sort_col_by_reference(std::integral_constant<size_t, col_idx>) {
+        void sort_col_by_reference(std::vector<size_t> &sort_order_tmp,
+                                   const std::vector<size_t> &sort_order_reference,
+                                   std::integral_constant<size_t, col_idx>) {
             auto& col = std::get<col_idx>(data_);
-            sort_order_tmp_ = sort_order_reference_;
-            reorder(col, sort_order_tmp_);
+            sort_order_tmp = sort_order_reference;
+            reorder(col, sort_order_tmp);
         }
 
         std::tuple<std::vector<Ts>...> data_;
-
-        // tmp buffer for reordering when sorting
-        std::vector<size_t> sort_order_tmp_;
-
-        // the reference permutation describing sorted order
-        std::vector<size_t> sort_order_reference_;
     };
 
     template <typename... Ts>
