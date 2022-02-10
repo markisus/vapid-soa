@@ -108,10 +108,11 @@ namespace vapid {
         template <size_t col_idx, typename C>
         void sort_by_field(C&& comparator) {
             size_t num_elems =  size();
-            std::vector<size_t> sort_order_tmp(num_elems);
-            std::vector<size_t> sort_order_reference(num_elems);
+            thread_local std::vector<size_t> sort_order_tmp;
+            thread_local std::vector<size_t> sort_order_reference;
 
             sort_order_tmp.resize(num_elems);
+            sort_order_reference.resize(num_elems);
             for (size_t i = 0; i < num_elems; ++i) {
                 sort_order_tmp[i] = i;
             }
