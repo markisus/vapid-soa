@@ -189,9 +189,6 @@ namespace vapid {
             ((get_column<I>().reserve(res_size)), ...);
         }
 
-        void reset_sort_reference() {
-        }
-
         template <size_t... I>
         void sort_by_reference_impl(std::vector<size_t> &sort_order_tmp,
                                     const std::vector<size_t> &sort_order_reference,
