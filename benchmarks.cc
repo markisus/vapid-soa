@@ -1,6 +1,7 @@
 #include <benchmark/benchmark.h>
 #include <random>
 #include <vector>
+#include <array>
 #include "vapid/soa.h"
 
 using Id = unsigned short;
