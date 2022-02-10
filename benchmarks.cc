@@ -62,6 +62,7 @@ struct TestCase {
             t.measurements_vec.push_back(m);
             t.measurements_soa.insert(m.sensor_id, m.object_id, m.timestamp, m.data);
         }
+        t.measurements_soa.prepare_tmp();
         return t;
     }
 };

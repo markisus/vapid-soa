@@ -168,15 +168,24 @@ soa {
 
 Benchmark
 -------
-We can observe speed ups for structure of arrays (soa=vapid::soa) vs array of structs (vec=std::vector) with the toy program benchmark.cc.  
+We can observe speed ups for structure of arrays (soa=vapid::soa) vs array of structs (vec=std::vector) with the benchmarks.cc.
 Here are the results using Visual Studio 2022 on Release mode on my laptop.
 
 ```
-benchmark results ==============
-soa sort time 0.126592
-vec sort time 0.312302
-soa timestamp avg time 0.0018725
-vec timestamp avg time 0.0052643
+# bazel run -c opt //:benchmarks
+Run on (8 X 2995 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x4)
+  L1 Instruction 32 KiB (x4)
+  L2 Unified 1280 KiB (x4)
+  L3 Unified 12288 KiB (x1)
+---------------------------------------------------------------
+Benchmark                     Time             CPU   Iterations
+---------------------------------------------------------------
+BM_SoaSortBySensorId   10599404 ns      9151786 ns           70
+BM_VecSortBySensorId   24412036 ns     25111607 ns           28
+BM_SoaSumTimestamps      106078 ns       106027 ns         5600
+BM_VecSumTimestamps      264606 ns       266841 ns         2635
 ```
 
 The benchmark contains a small program concerning simulated sensor measurements. With a straightforward array of structs, we store metadata together with the actual sensor data together and then just push_back() these onto an std::vector.
