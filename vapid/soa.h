@@ -112,6 +112,56 @@ namespace vapid {
                 sort_order_reference_.end(),
                 comparator_wrapper);
 
+            for (size_t i = 0; i < sort_order_reference_.size(); ++i) {
+                sort_order_reference_inv_[sort_order_reference_[i]] = i;
+            }
+
+            size_t curr = 0;
+            size_t cycle_min = 0;
+            size_t cycle_len = 0;
+            size_t num_visited = 0;
+            size_t cycle_idx = 0;
+
+            // std::cout << "Sort order reference size " << sort_order_reference_.size() << "\n";
+            // for(size_t i = 0; i < sort_order_reference_.size(); ++i) {
+            //     std::cout << sort_order_reference_[i] << " ";
+            // }
+            // std::cout << "\n";
+
+            while (num_visited < sort_order_reference_.size()) {
+                size_t next = sort_order_reference_[curr];
+                cycle_min = std::min(cycle_min, next);
+                cycle_visited_[curr] = 1;
+                ++num_visited;
+                ++cycle_len;
+
+                std::cout << "curr " << curr << ", next " << next << "\n";
+
+                if (cycle_min == next) {
+                    cycle_mins_[cycle_idx] = cycle_min;
+                    cycle_sizes_[cycle_idx] = cycle_len;
+                    // we have completely explored this cycle
+                    std::cout << "Explored cycle " << cycle_min << " with " << cycle_len << " elements\n";
+
+                    if (num_visited == sort_order_reference_.size()) {
+                        // we have explored every cycle
+                        // std::cout << "Explored every cycle. \n";
+                        break;
+                    }
+
+                    // walk up to the next cycle
+                    curr = cycle_min;
+                    while (cycle_visited_[curr]) {
+                        ++curr;
+                    }
+                    ++cycle_idx;
+                    cycle_min = curr;
+                    cycle_len = 0;
+                } else {
+                    curr = next;
+                }
+            }
+                
             sort_by_reference_impl(std::index_sequence_for<Ts...>{});
         }
 
@@ -181,6 +231,13 @@ namespace vapid {
             for (size_t i = 0; i < size(); ++i) {
                 sort_order_reference_[i] = i;
             }
+            sort_order_reference_inv_.resize(sort_order_reference_.size());
+            cycle_visited_.resize(sort_order_reference_.size());
+            for (auto& i : cycle_visited_) {
+                i = 0;
+            }
+            cycle_mins_.resize(sort_order_reference_.size());
+            cycle_sizes_.resize(sort_order_reference_.size());
         }
 
         template <size_t... I>
@@ -190,13 +247,56 @@ namespace vapid {
 
         template <size_t col_idx>
         void sort_col_by_reference(std::integral_constant<size_t, col_idx>) {
-            auto& src = std::get<col_idx>(data_);
-            auto& dst = std::get<col_idx>(data_tmp_);
-            dst.resize(src.size());
-            for (size_t idx = 0; idx < src.size(); ++idx) {
-                dst[idx] = std::move(src[sort_order_reference_[idx]]);
+            if (false) {
+                auto& src = std::get<col_idx>(data_);
+                auto& dst = std::get<col_idx>(data_tmp_);
+
+                dst.resize(src.size());
+                for (size_t idx = 0; idx < src.size(); ++idx) {
+                    dst[idx] = std::move(src[sort_order_reference_[idx]]);
+                }
+                std::swap(src, dst);
+            } else {
+                std::cout << "cycle sizes\n ";
+                for(size_t i = 0; i < cycle_sizes_.size(); ++i) {
+                    std::cout << cycle_sizes_[i] << " ";
+                }
+                std::cout << "\n";
+                std::cout << "cycle mins\n ";
+                for(size_t i = 0; i < cycle_mins_.size(); ++i) {
+                    std::cout << cycle_mins_[i] << " ";
+                }
+                std::cout << "\n";
+
+                
+                auto& src = std::get<col_idx>(data_);
+                size_t cycle_idx = 0;
+                size_t curr = 0;
+                size_t num_visited = 0;
+                for (size_t cycle_idx = 0; cycle_idx <= cycle_sizes_.size(); ++cycle_idx) {
+                    std::cout << "Fixing cycle " << cycle_idx << "\n";
+                    curr = cycle_mins_[cycle_idx];
+
+                    size_t cycle_size = cycle_sizes_[cycle_idx];
+                    if (cycle_size == 0) {
+                        break;
+                    }
+                    
+                    size_t cycle_min = cycle_mins_[cycle_idx];
+
+                    std::cout << "\tsize " << cycle_size << "\n";
+                    std::cout << "\tmin " << cycle_min << "\n";
+
+                    for (size_t i = 0; i+1 < cycle_size; ++i) {
+                        size_t next = sort_order_reference_[curr];
+                        std::cout << "Swapping " << curr << ", " << next << "\n";
+
+                        std::swap(src[curr], src[next]);
+                        curr = next;
+                        ++num_visited;
+                    }
+                }
             }
-            std::swap(src, dst);
         }
 
         std::tuple<std::vector<Ts>...> data_;
@@ -206,6 +306,10 @@ namespace vapid {
 
         // the reference permutation describing sorted order
         std::vector<size_t> sort_order_reference_;
+        std::vector<size_t> sort_order_reference_inv_;
+        std::vector<uint8_t> cycle_visited_;
+        std::vector<size_t> cycle_sizes_;
+        std::vector<size_t> cycle_mins_;
     };
 
     template <typename... Ts>
