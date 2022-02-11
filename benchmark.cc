@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <random>
 #include <array>
+#include <string>
 #include "vapid/soa.h"
 #include "tictoc.hpp"
 
@@ -10,13 +11,14 @@ using Id = unsigned short;
 std::default_random_engine gen;
 std::uniform_int_distribution<Id> sensor_id_gen(0, 100);
 std::uniform_int_distribution<Id> object_id_gen(0, 10);
+std::uniform_int_distribution<int> char_gen('a', 'z');
 std::uniform_real_distribution<double> real_gen(-10.0, 10.0);
 
-struct SensorData {
+struct ArraySensorData {
     std::array<double, 18> xyz;
 
-    static SensorData random() {
-        SensorData s;
+    static ArraySensorData random() {
+        ArraySensorData s;
         for (size_t i = 0; i < s.xyz.size(); ++i) {
             s.xyz[i] = real_gen(gen);
         }
@@ -24,11 +26,36 @@ struct SensorData {
     };
 };
 
+struct StringSensorData {
+    std::string data;
+
+    static StringSensorData random() {
+        StringSensorData res;
+        char buff[31];
+        for (size_t i = 0; i < 30; ++i) {
+            buff[i] = char_gen(gen);
+        }       
+        buff[30] = 0;
+        res.data = buff;
+        return res;
+    };
+};
+
+
+
 template <typename... Ts>
-std::ostream& operator<<(std::ostream& cout, const SensorData& s) {
+std::ostream& operator<<(std::ostream& cout, const ArraySensorData& s) {
     cout << "{" << s.xyz[0] << ", " << s.xyz[1] << ", " << s.xyz[2] << "}";
     return cout;
 }
+
+template <typename... Ts>
+std::ostream& operator<<(std::ostream& cout, const StringSensorData& s) {
+    cout << "\"" << s.data << "\"";
+    return cout;
+}
+
+using SensorData = StringSensorData;
 
 struct Measurement {
     Id sensor_id;
@@ -53,7 +80,7 @@ std::ostream& operator<<(std::ostream& cout, const Measurement& m) {
 }
 
 struct TestCase {
-    vapid::soa<Id, Id, double, SensorData> measurements_soa;
+    vapid::soa<true, Id, Id, double, SensorData> measurements_soa;
     std::vector<Measurement> measurements_vec;
 
     static TestCase random() {
@@ -82,6 +109,8 @@ int main(int argc, char* argv[])
         std::cout << "\rrunning trial " << trial << "/" << num_trials << std::flush;
         TestCase t = t0;
 
+        t.measurements_soa.sort_by_field<1>();
+
         // soa sort
         tictoc.tic();
         t.measurements_soa.sort_by_field<0>();
@@ -93,10 +122,17 @@ int main(int argc, char* argv[])
         for (double d : t.measurements_soa.get_column<2>()) {
             soa_ts_avg += d;
         }
+
         soa_ts_avg /= t.measurements_soa.size();
         soa_ts_avg_time += tictoc.toc();
 
         // vec sort
+        std::stable_sort(t.measurements_vec.begin(),
+            t.measurements_vec.end(),
+            [](auto& m1, auto& m2) {
+                return m1.object_id < m2.object_id;
+            });
+
         tictoc.tic();
         std::stable_sort(t.measurements_vec.begin(),
             t.measurements_vec.end(),
