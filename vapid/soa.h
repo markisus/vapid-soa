@@ -68,20 +68,12 @@ namespace vapid {
             sort_order_reference_.push_back(size() - 1);
         }
 
-        auto get_row(size_t row) const {
-            return get_row_impl(std::index_sequence_for<Ts...>{}, row);
-        }
-
-        auto get_row(size_t row) {
-            return get_row_impl(std::index_sequence_for<Ts...>{}, row);
-        }
-
         auto operator[](size_t idx) const {
-            return get_row(idx);
+            return get_row_impl(std::index_sequence_for<Ts...>{}, idx);
         }
 
         auto operator[](size_t idx) {
-            return get_row(idx);
+            return get_row_impl(std::index_sequence_for<Ts...>{}, idx);
         }
 
         template <size_t... I>
@@ -136,7 +128,7 @@ namespace vapid {
             }
             ss << "soa {\n";
             for (size_t i = 0; i < num_elements_to_print; ++i) {
-                const auto t = get_row(i);
+                const auto t = operator[](i);
                 ss << "\t";
                 dump_tuple(ss, t);
                 ss << std::endl;
