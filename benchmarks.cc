@@ -92,6 +92,19 @@ static void BM_SoaSortBySensorId_ArrayData(benchmark::State& state) {
     }
 }
 
+
+static void BM_SoaSortBySensorId_ArrayData_NoDoubleBuffering(benchmark::State& state) {
+    for (auto _ : state) {
+        state.PauseTiming();
+        auto soa = random_array_data.measurements_soa;
+        soa.set_no_double_buffering();
+        state.ResumeTiming();
+
+        soa.sort_by_field<0>();
+        benchmark::DoNotOptimize(soa.get_column<0>()[0]);
+    }
+}
+
 static void BM_SoaSortBySensorId_StringData(benchmark::State& state) {
     for (auto _ : state) {
         state.PauseTiming();
@@ -158,7 +171,9 @@ static void BM_VecSumTimestamps_ArrayData(benchmark::State& state) {
 
 // Register the function as a benchmark
 BENCHMARK(BM_SoaSortBySensorId_ArrayData);
+BENCHMARK(BM_SoaSortBySensorId_ArrayData_NoDoubleBuffering);
 BENCHMARK(BM_VecSortBySensorId_ArrayData);
+
 BENCHMARK(BM_SoaSortBySensorId_StringData);
 BENCHMARK(BM_VecSortBySensorId_StringData);
 
