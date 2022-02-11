@@ -32,9 +32,9 @@ namespace vapid {
         TupleDumper<std::integral_constant<uint16_t, 0>, T>::dump(ss, t);
     }
 
-    enum class SoaPref { speed, space };
+    enum class prefer { speed, space };
 
-    template <SoaPref pref, typename... Ts>
+    template <prefer pref, typename... Ts>
     class soa {
     public:
         using backing_type = std::tuple<std::vector<Ts>...>;
@@ -67,7 +67,7 @@ namespace vapid {
         template <typename... Xs>
         void insert(Xs... xs) {
             insert_impl(std::index_sequence_for<Ts...>{}, std::forward_as_tuple(xs...));
-            if constexpr (pref == SoaPref::speed)
+            if constexpr (pref == prefer::speed)
                sort_order_reference_.push_back(size() - 1);
         }
 
@@ -111,7 +111,7 @@ namespace vapid {
 
         template <size_t col_idx, typename C>
         void sort_by_field(C&& comparator) {
-            if constexpr (pref == SoaPref::speed) {
+            if constexpr (pref == prefer::speed) {
                reset_sort_reference();
                auto& col = get_column<col_idx>();
 
@@ -174,7 +174,7 @@ namespace vapid {
         }
 
         void prepare_tmp() {
-            if constexpr (pref == SoaPref::speed) {
+            if constexpr (pref == prefer::speed) {
                 // sorting requires the temporary buffers in data_tmp_
                 // this function pre-allocates those temporary buffers
                 // so that no allocation is done during the sort call
@@ -214,7 +214,7 @@ namespace vapid {
         }
 
         void reset_sort_reference() {
-            if constexpr (pref == SoaPref::speed) {
+            if constexpr (pref == prefer::speed) {
                 for (size_t i = 0; i < size(); ++i) {
                     sort_order_reference_[i] = i;
                 }
@@ -275,8 +275,8 @@ namespace vapid {
         std::tuple<std::vector<Ts>...> data_;
 
         struct empty_ { };
-        using ts = std::conditional_t<pref == SoaPref::speed, std::tuple<std::vector<Ts>...>, empty_>;
-        using cond_size_vec = std::conditional_t<pref == SoaPref::speed, std::vector<size_t>, empty_>;
+        using ts = std::conditional_t<pref == prefer::speed, std::tuple<std::vector<Ts>...>, empty_>;
+        using cond_size_vec = std::conditional_t<pref == prefer::speed, std::vector<size_t>, empty_>;
 
         
         // tmp buffers for reordering when sorting
@@ -286,7 +286,7 @@ namespace vapid {
         cond_size_vec sort_order_reference_;
     };
 
-    template <SoaPref pref, typename... Ts>
+    template <prefer pref, typename... Ts>
     std::ostream& operator<<(std::ostream& cout, const vapid::soa<pref, Ts...>& soa) {
         soa.dump(cout);
         return cout;

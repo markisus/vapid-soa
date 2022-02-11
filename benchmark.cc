@@ -80,7 +80,7 @@ std::ostream& operator<<(std::ostream& cout, const Measurement& m) {
 }
 
 struct TestCase {
-    vapid::soa<vapid::SoaPref::speed, Id, Id, double, SensorData> measurements_soa;
+    vapid::soa<vapid::prefer::speed, Id, Id, double, SensorData> measurements_soa;
     std::vector<Measurement> measurements_vec;
 
     static TestCase random() {
