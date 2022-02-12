@@ -40,7 +40,9 @@ namespace vapid {
 
         void reset(size_t perm_size) {
             element_visited.resize(perm_size);
-            for (auto& b : element_visited) {
+
+            // gcc chokes on `for (auto& b : element_visited)`
+            for (std::vector<bool>::reference b : element_visited) {
                 b = false;
             }
 
