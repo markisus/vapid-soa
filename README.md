@@ -223,10 +223,13 @@ Bazel Installation
 # WORKSPACE
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+vapid_soa_version = "e5f43d7a090079010c6fdcce5068182528009415"
 http_archive(
     name = "com_github_markisus_vapid-soa",
-    url = "https://github.com/markisus/vapid-soa/archive/d3c303a3fe15ebc4c8a7e3049bd21a3f663a42d0.zip",
-    strip_prefix = "vapid-soa-d3c303a3fe15ebc4c8a7e3049bd21a3f663a42d0")
+    url = "https://github.com/markisus/vapid-soa/archive/{}.zip".format(vapid_soa_version),
+    sha256 = "fd0c37dfd788e971e82d2733422e2e089cd422ba69499ea665421f0880ec7c58",
+    strip_prefix = "vapid-soa-{}".format(vapid_soa_version))
+
 ```
 ```starlark
 # BUILD
