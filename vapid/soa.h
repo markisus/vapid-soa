@@ -292,12 +292,10 @@ namespace vapid {
                 size_t curr = 0;
                 for (size_t cycle_idx = 0; cycle_idx <= sort_order_analysis_.cycle_sizes.size(); ++cycle_idx) {
                     curr = sort_order_analysis_.cycle_mins[cycle_idx];
-
                     size_t cycle_size = sort_order_analysis_.cycle_sizes[cycle_idx];
                     if (cycle_size == 0) {
                         break;
                     }
-                    size_t cycle_min = sort_order_analysis_.cycle_mins[cycle_idx];
                     for (size_t i = 0; i+1 < cycle_size; ++i) {
                         size_t next = sort_order_reference_[curr];
                         std::swap(src[curr], src[next]);
