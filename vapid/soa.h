@@ -156,7 +156,6 @@ namespace vapid {
         template <typename... Xs>
         void insert(Xs... xs) {
             insert_impl(std::index_sequence_for<Ts...>{}, std::forward_as_tuple(xs...));
-            sort_order_reference_.push_back(size() - 1);
         }
 
         auto operator[](size_t idx) const {
@@ -277,6 +276,7 @@ namespace vapid {
         }
 
         void reset_sort_reference() {
+            sort_order_reference_.resize(size());
             for (size_t i = 0; i < size(); ++i) {
                 sort_order_reference_[i] = i;
             }
