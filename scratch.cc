@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     // We can pass a custom comparator when sorting
     // Let's sort based on length of last name
     std::cout << "Sorting by number of characters in the last name." << "\n";
-    presidents.sort_by_field<2>([](auto& lname_a, auto& lname_b){ 
+    presidents.sort_by_field<LAST_NAME>([](auto& lname_a, auto& lname_b){ 
         return lname_a.size() < lname_b.size();
     });
     std::cout << presidents << "\n";

@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     // We can pass a custom comparator when sorting
     // Let's sort based on length of last name
     std::cout << "Sorting by number of characters in the last name." << "\n";
-    presidents.sort_by_field<2>([](auto& lname_a, auto& lname_b){ 
+    presidents.sort_by_field<LAST_NAME>([](auto& lname_a, auto& lname_b){ 
         return lname_a.size() < lname_b.size();
     });
     std::cout << presidents << "\n";
@@ -187,6 +187,8 @@ BM_VecSortBySensorId   24412036 ns     25111607 ns           28
 BM_SoaSumTimestamps      106078 ns       106027 ns         5600
 BM_VecSumTimestamps      264606 ns       266841 ns         2635
 ```
+
+*Note:* sort_by_field (SoaSoart benchmarks) is slow in GCC due to unknown reasons.
 
 The benchmark contains a small program concerning simulated sensor measurements. With a straightforward array of structs, we store metadata together with the actual sensor data together and then just push_back() these onto an std::vector.
 ```c++
