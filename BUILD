@@ -31,3 +31,12 @@ cc_binary(
             "@com_github_google_benchmark//:benchmark_main"],
     copts=COPTS
 )
+
+cc_binary(
+    name = "tests",
+    srcs = ["tests.cc"],
+    deps = [
+        ":soa",
+        "@com_google_googletest//:gtest_main",
+    ],
+    copts=COPTS)
