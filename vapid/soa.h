@@ -214,6 +214,31 @@ namespace vapid {
             sort_by_field<col_idx>([](auto&& a, auto&& b) { return a < b; });
         }
 
+        template <size_t... I, typename C>
+        void sort_by_view(C&& comparator) {
+            reset_sort_reference();
+
+            auto comparator_wrapper = [=](size_t a, size_t b) {
+                return comparator(view<I...>(a),
+                                  view<I...>(b));
+            };
+
+            std::stable_sort(sort_order_reference_.begin(),
+                sort_order_reference_.end(),
+                comparator_wrapper);
+
+            if (no_double_buffering_) {
+                sort_order_analysis_.store_analysis(sort_order_reference_);
+            }
+
+            sort_by_reference_impl(std::index_sequence_for<Ts...>{});
+        }
+
+        template <size_t... I>
+        void sort_by_view() {
+            sort_by_view<I...>([](auto&& a, auto&& b) { return a < b; });
+        }
+
         void dump(std::basic_ostream<char>& ss) const {
             constexpr size_t MAX_NUM_ELEMENTS_TO_PRINT = 25;
             size_t num_elements_to_print = size();
