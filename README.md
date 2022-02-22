@@ -1,4 +1,6 @@
 # vapid soa
+![soa_logo](https://user-images.githubusercontent.com/469689/155224679-98bda7fb-8a8c-4a18-90f1-bb96a2a3d23c.png)
+
 A simple c++17 header only library that implements structure of arrays data structure backed by std::vector.  
 These are the most useful operations.  
 - `.insert(field1, field2, ...)` field_n inserts into the nth array
@@ -264,11 +266,11 @@ Bazel Installation
 # WORKSPACE
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-vapid_soa_version = "e5f43d7a090079010c6fdcce5068182528009415"
+vapid_soa_version = "d327bd00e3a52d8c04550215df5711d0545e396e"
 http_archive(
     name = "com_github_markisus_vapid-soa",
     url = "https://github.com/markisus/vapid-soa/archive/{}.zip".format(vapid_soa_version),
-    sha256 = "fd0c37dfd788e971e82d2733422e2e089cd422ba69499ea665421f0880ec7c58",
+    sha256 = "c643d20af1ce95566ff4b2b6cdca2bd2f6aa0254a4f603c74ac8e62a84a527b4",
     strip_prefix = "vapid-soa-{}".format(vapid_soa_version))
 
 ```
