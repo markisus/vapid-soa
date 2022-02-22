@@ -219,8 +219,8 @@ namespace vapid {
             reset_sort_reference();
 
             auto comparator_wrapper = [=](size_t a, size_t b) {
-                return comparator(view<I...>(a),
-                                  view<I...>(b));
+                return comparator(this->view<I...>(a),
+                                  this->view<I...>(b));
             };
 
             std::stable_sort(sort_order_reference_.begin(),
