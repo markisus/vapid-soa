@@ -73,5 +73,23 @@ int main(int argc, char *argv[])
     });
     std::cout << presidents << "\n";
 
+    // We can also sort by a view.
+    std::cout << "Sorting by first name, last name." << "\n";
+    presidents.sort_by_view<FIRST_NAME,LAST_NAME>();
+    std::cout << presidents << "\n";
+
+    // We can also use a comparator when sorting by view.
+    // In that case, the comparator should take a tuple of references.
+    // For example, we can sort by difference in length of last and first name.
+    std::cout << "Sorting by length of first name - length of last name." << "\n";    
+    presidents.sort_by_view<LAST_NAME, FIRST_NAME>([](auto view1, auto view2) {
+        const auto& [lname_a, fname_a] = view1;
+        const auto& [lname_b, fname_b] = view2;
+        int view1_order = -int(lname_a.size()) + int(fname_a.size());
+        int view2_order = -int(lname_b.size()) + int(fname_b.size());
+        return view1_order < view2_order;
+    });
+    std::cout << presidents << "\n";
+
     return 0;
 }
