@@ -181,7 +181,7 @@ namespace vapid {
         }
 
         void resize(size_t size) {
-            return resize_impl(std::index_sequence_for<Ts...>{}, size);
+            return resize_impl(std::index_sequence_for<Ts...>{}, data_, size);
         }
 
         void reserve(size_t size) {
