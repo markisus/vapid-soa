@@ -194,7 +194,7 @@ namespace vapid {
 
             auto& col = get_column<col_idx>();
 
-            auto comparator_wrapper = [=](size_t a, size_t b) {
+            auto comparator_wrapper = [&](size_t a, size_t b) {
                 return comparator(col[a], col[b]);
             };
 
